@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>Orange — Le monde, à portée de main (concept)</title>
+<meta content="Concept de site multi-pays pour les filiales Orange (Côte d'Ivoire, Sénégal) : réseau, Orange Money, forfaits et l'app Max it, autour du carré Orange." name="description">
+<meta content="#000000" name="theme-color">
+<!-- Concept de site, maquette non officielle. Images : voir PROMPTS-IMAGES.md (dossier assets/img). -->
+<link href="assets/icons/favicon.svg" rel="icon" type="image/svg+xml">
+<link href="assets/icons/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
+<link href="assets/icons/apple-touch-icon.png" rel="apple-touch-icon">
+<link href="assets/css/orange.css" rel="stylesheet">
+<script>
+  /* images : essaie .webp, puis .jpg, puis .png ; à défaut, la place reste un aplat (classe is-missing) */
+  window.__img = function (el) {
+    var ext = ['jpg', 'png'], i = +(el.dataset.try || 0);
+    if (i < ext.length) { el.dataset.try = i + 1; el.src = el.src.replace(/\.(webp|jpg|png)$/, '.' + ext[i]); }
+    else { el.classList.add('is-missing'); el.removeAttribute('onerror'); }
+  };
+</script>
+</head>
+<body>
+<a class="skip-link" href="#partout">Aller au contenu</a>
+
+<header class="site-header" id="site-header">
+  <a aria-label="Orange, accueil" class="logo" href="#accueil"><span>orange</span></a>
+  <nav aria-label="Navigation principale" class="nav">
+    <a href="#partout">Offres</a>
+    <a href="#money">Orange Money</a>
+    <a href="#forfaits">Forfaits</a>
+    <a href="#maxit">Max it</a>
+    <a href="#boutiques">Boutiques</a>
+    <a class="nav__cta" href="#forfaits">Mon espace</a>
+    <div class="pays-sel">
+      <button aria-controls="pays-list" aria-expanded="false" class="pays-sel__btn" id="pays-btn" type="button"><span id="pays-court">CI</span><span class="sr-only"> — changer de pays</span></button>
+      <ul class="pays-sel__list" hidden id="pays-list"></ul>
+    </div>
+  </nav>
+  <button aria-controls="mobile-menu" aria-expanded="false" aria-label="Ouvrir le menu" class="menu-toggle" id="menu-toggle" type="button"><span></span><span></span><span></span></button>
+</header>
+
+<div class="mobile-menu" hidden id="mobile-menu">
+  <nav aria-label="Menu">
+    <a href="#partout">Offres</a>
+    <a href="#money">Orange Money</a>
+    <a href="#forfaits">Forfaits</a>
+    <a href="#maxit">Max it</a>
+    <a href="#boutiques">Boutiques</a>
+  </nav>
+  <div class="mobile-menu__pays" id="pays-mobile"></div>
+</div>
+
+<!-- Choix du pays à la première visite (on peut changer ensuite depuis l'en-tête) -->
+<div aria-labelledby="choix-titre" aria-modal="true" class="choix" hidden id="choix" role="dialog">
+  <p class="kicker">Bienvenue</p>
+  <h2 id="choix-titre">Choisissez votre pays</h2>
+  <div class="choix__grid" id="choix-grid"></div>
+</div>
+
+<main>
+
+<!-- 1. HÉROS : le carré orange s'ouvre sur la ville -->
+<section aria-labelledby="hero-title" class="hero" id="accueil">
+  <div class="hero__sticky">
+    <div class="hero__window" id="hero-window">
+      <img alt="" class="hero__img" data-pays-img="heros" fetchpriority="high" id="hero-img">
+      <div aria-hidden="true" class="hero__fill" id="hero-fill"><span class="hero__word">orange</span></div>
+    </div>
+    <p aria-hidden="true" class="hero__intro" id="hero-intro"><span></span>Faites défiler</p>
+    <div class="hero__text" id="hero-text">
+      <p class="kicker" id="hero-kicker">Orange</p>
+      <h1 class="hero__title" id="hero-title">Le monde,<br>à portée de main.</h1>
+      <div class="hero__actions">
+        <a class="btn btn--orange" href="#forfaits" id="hero-cta">Composer mon forfait</a>
+        <a class="btn btn--ghost" href="#money">Découvrir Orange Money</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ÉVÉNEMENT DU MOMENT (Tabaski…) : n'apparaît que pendant ses dates (fichier pays) -->
+<section aria-labelledby="event-title" class="event" hidden id="evenement">
+  <div class="wrap event__grid">
+    <figure class="event__photo"><img alt="" id="event-img"></figure>
+    <div>
+      <p class="kicker" id="event-kicker"></p>
+      <h2 class="title title--light" id="event-title"></h2>
+      <p class="event__text" id="event-text"></p>
+      <div class="pass pass--event" id="event-pass"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. NOS OFFRES : une catégorie d'offres du pays par carré -->
+<section aria-labelledby="partout-title" class="partout" id="partout">
+  <div class="partout__sticky">
+    <div class="partout__text">
+      <p class="kicker">Nos offres</p>
+      <h2 class="sr-only" id="partout-title">Nos offres</h2>
+      <ol class="partout__steps" id="partout-steps"></ol>
+      <p aria-hidden="true" class="partout__count"><span id="partout-no">01</span> / 05</p>
+    </div>
+    <div class="partout__frame">
+      <span aria-hidden="true" class="partout__outline" id="partout-outline"></span>
+      <div class="partout__square" id="partout-square"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. ORANGE MONEY : le téléphone reste fixe, le transfert se fait au défilement -->
+<section aria-labelledby="money-title" class="money" id="money">
+  <div class="money__sticky">
+    <div class="money__text">
+      <p class="kicker">Orange Money</p>
+      <h2 class="money__title" id="money-title">Envoyer de l'argent,<br>aussi simple qu'un message.</h2>
+      <ol class="money__steps" id="money-steps">
+        <li class="is-on"><b>01</b> Votre argent, toujours sur vous.</li>
+        <li><b>02</b> Choisissez à qui envoyer.</li>
+        <li><b>03</b> Saisissez le montant.</li>
+        <li><b>04</b> Confirmez avec votre code secret.</li>
+        <li><b>05</b> C'est reçu. Instantanément.</li>
+      </ol>
+      <div class="money__ctas">
+        <a class="btn btn--orange" href="offre.html?offre=money" id="money-lien">Découvrir Orange Money</a>
+        <a class="money__marchand" href="offre.html?offre=money#marchand" id="money-marchand">Devenir marchand <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div aria-hidden="true" class="phone" id="money-phone">
+      <div class="phone__screen" data-step="1" id="money-screen">
+        <div class="ms ms--home">
+          <p class="ms__hello">Bonjour <span data-m="prenom"></span></p>
+          <p class="ms__label">Solde Orange Money</p>
+          <p class="ms__balance">125 000 <small>FCFA</small></p>
+          <div class="ms__actions"><span>Envoyer</span><span>Payer</span><span>Retirer</span><span>Recharger</span></div>
+          <p class="ms__label">Récents</p>
+          <ul class="ms__list" id="ms-recents"></ul>
+        </div>
+        <div class="ms ms--to">
+          <p class="ms__head">Envoyer à</p>
+          <div class="ms__field" data-m="numero"></div>
+          <ul class="ms__list" id="ms-contacts"></ul>
+        </div>
+        <div class="ms ms--amount">
+          <p class="ms__head">Montant pour Maman</p>
+          <p class="ms__big"><span id="money-typed">25 000</span> <small>FCFA</small></p>
+          <div class="ms__keys"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span></span><span>0</span><span>⌫</span></div>
+        </div>
+        <div class="ms ms--pin">
+          <p class="ms__head">Code secret</p>
+          <div class="ms__pin" id="money-pin"><i></i><i></i><i></i><i></i></div>
+          <p class="ms__label">25 000 FCFA → Maman</p>
+        </div>
+        <div class="ms ms--done">
+          <div class="ms__check"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M14 27 l8 8 l16 -18"/></svg></div>
+          <p class="ms__done">Transfert réussi</p>
+          <p class="ms__label">Maman a reçu 25 000 FCFA</p>
+        </div>
+      </div>
+    </div>
+
+    <figure class="money__photo"></figure>
+  </div>
+</section>
+
+<!-- 4. FORFAITS : configurateur -->
+<section aria-labelledby="forfaits-title" class="forfaits" id="forfaits">
+  <div class="wrap forfaits__grid">
+    <div>
+      <p class="kicker kicker--dark">Forfaits</p>
+      <h2 class="title" id="forfaits-title">Votre forfait,<br>à votre mesure.</h2>
+      <p class="lead" id="forfaits-lead">Internet, appels, durée : réglez, le prix suit.</p>
+      <ul class="catalogue" hidden id="catalogue"></ul>
+      <div class="cfg" id="cfg">
+        <label class="cfg__row"><span>Internet</span><output id="cfg-data-out"></output>
+          <input aria-label="Internet" id="cfg-data" max="6" min="0" step="1" type="range" value="3"></label>
+        <label class="cfg__row"><span>Appels</span><output id="cfg-min-out"></output>
+          <input aria-label="Appels" id="cfg-min" max="6" min="0" step="1" type="range" value="2"></label>
+        <div aria-label="Validité" class="cfg__row cfg__row--seg" role="radiogroup">
+          <span>Validité</span>
+          <div class="seg">
+            <button aria-checked="false" data-days="1" role="radio" type="button">1 jour</button>
+            <button aria-checked="false" data-days="7" role="radio" type="button">7 jours</button>
+            <button aria-checked="true" data-days="30" role="radio" type="button">30 jours</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div aria-live="polite" class="pass" id="pass">
+      <p class="pass__name" id="pass-name"></p>
+      <p class="pass__price"><span id="pass-price"></span> <small>FCFA</small></p>
+      <ul class="pass__list" id="pass-list"></ul>
+      <button class="btn btn--orange" id="pass-buy" type="button">Souscrire</button>
+      <p class="pass__note" id="pass-note">Prix indicatif — concept, sans souscription réelle.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE PROPRE À UN PAYS : Orange Bank, simulateur d'épargne (remplace les forfaits quand le fichier pays l'active) -->
+<section aria-labelledby="banque-title" class="forfaits banque" hidden id="banque">
+  <div class="wrap forfaits__grid">
+    <div>
+      <p class="kicker kicker--dark" id="banque-kicker">Orange Bank</p>
+      <h2 class="title" id="banque-title"></h2>
+      <p class="lead" id="banque-lead"></p>
+      <div class="cfg">
+        <label class="cfg__row"><span>Épargne par mois</span><output id="bq-mois-out"></output>
+          <input aria-label="Épargne par mois" id="bq-mois" max="9" min="0" step="1" type="range" value="3"></label>
+        <div aria-label="Durée" class="cfg__row cfg__row--seg" role="radiogroup">
+          <span>Durée</span>
+          <div class="seg">
+            <button aria-checked="false" data-mois="6" role="radio" type="button">6 mois</button>
+            <button aria-checked="true" data-mois="12" role="radio" type="button">1 an</button>
+            <button aria-checked="false" data-mois="24" role="radio" type="button">2 ans</button>
+            <button aria-checked="false" data-mois="36" role="radio" type="button">3 ans</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div aria-live="polite" class="pass bq-card">
+      <div aria-hidden="true" class="bq-carte"><span class="bq-carte__puce"></span><span class="bq-carte__nom">orange bank</span><span class="bq-carte__num">•••• 2048</span></div>
+      <p class="pass__name">Votre épargne</p>
+      <p class="pass__price"><span id="bq-total"></span> <small id="bq-devise">FCFA</small></p>
+      <ul class="pass__list" id="bq-list"></ul>
+      <div class="bq-actions">
+        <a class="btn btn--orange" href="offre.html?offre=bank" id="bq-lien">Ouvrir mon compte</a>
+        <a class="bq-carte-lien" href="offre.html?offre=bank#tarifs" id="bq-lien-carte">La carte prépayée <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="pass__note" id="bq-note"></p>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE PROPRE À UN PAYS : programme de fidélité (activé par le fichier pays) -->
+<section aria-labelledby="fid-title" class="fid" hidden id="fidelite">
+  <div class="wrap fid__grid">
+    <div>
+      <p class="kicker kicker--dark" id="fid-kicker"></p>
+      <h2 class="title title--black" id="fid-title"></h2>
+      <p class="lead" id="fid-text"></p>
+    </div>
+    <div class="fid__card">
+      <p class="fid__label">Vos points</p>
+      <p class="fid__points"><span id="fid-points">0</span></p>
+      <ol class="fid__steps" id="fid-steps"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- 5. LE RÉSEAU : la carte s'allume -->
+<section aria-labelledby="reseau-title" class="reseau" id="reseau">
+  <div class="wrap reseau__grid">
+    <div>
+      <p class="kicker">Le réseau</p>
+      <h2 class="title title--light" id="reseau-title">Tout le pays,<br>une même connexion.</h2>
+      <p class="reseau__pays" id="reseau-pays"></p>
+      <div aria-label="Technologie" class="seg seg--dark" id="net-filter" role="radiogroup">
+        <button aria-checked="true" data-net="4g" role="radio" type="button">4G</button>
+        <button aria-checked="false" data-net="5g" role="radio" type="button">5G</button>
+        <button aria-checked="false" data-net="fibre" role="radio" type="button">Fibre</button>
+      </div>
+      <div class="city" id="city-info"><p class="city__name">Choisissez une ville</p><p class="city__techs">sur la carte</p></div>
+      <p class="reseau__note">Couverture illustrative — concept.</p>
+    </div>
+    <div class="map" id="map"></div>
+  </div>
+</section>
+
+<!-- 6. MAX IT : tout Orange dans une app -->
+<section aria-labelledby="maxit-title" class="maxit" id="maxit">
+  <div class="wrap">
+    <p class="kicker kicker--dark">Max it</p>
+    <h2 class="title title--black" id="maxit-title">Tout Orange.<br>Une seule app.</h2>
+  </div>
+  <div aria-hidden="true" class="maxit__phones">
+    <div class="phone phone--app"><div class="phone__screen app">
+      <p class="app__top">Max it</p>
+      <div class="app__card app__card--orange"><p>Internet restant</p><b>14,2 Go</b><span class="app__bar"><i style="width:64%"></i></span></div>
+      <div class="app__card"><p>Crédit</p><b>2 350 FCFA</b></div>
+      <div class="app__tiles"><span>Pass</span><span>Recharger</span><span>Factures</span><span>Aide</span></div>
+    </div></div>
+    <div class="phone phone--app"><div class="phone__screen app">
+      <p class="app__top">Orange Money</p>
+      <div class="app__card app__card--black"><p>Solde</p><b>100 000 FCFA</b></div>
+      <ul class="app__tx"><li>Maman <em>− 25 000</em></li><li>Salaire <em class="plus">+ 180 000</em></li><li>Boutique Diallo <em>− 4 500</em></li><li>Facture électricité <em>− 12 300</em></li></ul>
+    </div></div>
+    <div class="phone phone--app"><div class="phone__screen app">
+      <p class="app__top">Divertissement</p>
+      <div class="app__media"><span>EN DIRECT</span><b>Le grand match</b></div>
+      <div class="app__media app__media--b"><b>Musique</b><p>Les sons du moment</p></div>
+      <div class="app__media app__media--c"><b>Jeux</b><p>Défiez vos amis</p></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 7. IMPACT -->
+<section aria-labelledby="impact-title" class="impact" id="impact">
+  <div class="wrap">
+    <p class="kicker kicker--dark">Au-delà du réseau</p>
+    <h2 class="title" id="impact-title">Le numérique,<br>pour tous.</h2>
+    <ul class="impact__grid">
+      <li><figure><img alt="Une jeune développeuse code dans un centre de formation numérique" loading="lazy" onerror="__img(this)" src="assets/img/commun/impact-codeuse.webp"></figure><h3>Apprendre le code</h3><p>Des formations gratuites pour que les jeunes talents deviennent les développeurs de demain.</p></li>
+      <li><figure><img alt="Des écoliers découvrent des tablettes avec leur enseignant" loading="lazy" onerror="__img(this)" src="assets/img/commun/impact-enfants.webp"></figure><h3>Éveiller les plus jeunes</h3><p>Des écoles équipées, pour que chaque enfant grandisse avec les outils de son époque.</p></li>
+      <li><figure><img alt="Une jeune entrepreneure photographie un vêtement pour le vendre en ligne" loading="lazy" onerror="__img(this)" src="assets/img/commun/impact-entrepreneure.webp"></figure><h3>Entreprendre en ligne</h3><p>Vendre, encaisser, se faire connaître : le téléphone devient la vitrine.</p></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8. BOUTIQUES & AIDE -->
+<section aria-labelledby="boutiques-title" class="boutiques" id="boutiques">
+  <div class="wrap boutiques__grid">
+    <figure class="boutiques__photo"><img alt="Une conseillère aide un client à choisir un smartphone en boutique" loading="lazy" onerror="__img(this)" src="assets/img/commun/boutique.webp"></figure>
+    <div>
+      <p class="kicker kicker--dark">Boutiques &amp; aide</p>
+      <h2 class="title" id="boutiques-title">Un conseiller,<br>près de chez vous.</h2>
+      <p class="lead" id="boutiques-lead"></p>
+      <a class="btn btn--black" href="#" id="boutiques-lien">Trouver une boutique</a>
+      <div class="faq">
+        <details><summary>Comment ouvrir un compte Orange Money ?</summary><p>En boutique ou chez un point de vente agréé, avec une pièce d'identité. L'ouverture prend quelques minutes.</p></details>
+        <details><summary>Comment connaître mon solde Internet ?</summary><p>Dans l'app Max it, dès l'écran d'accueil.</p></details>
+        <details><summary>La 5G fonctionne-t-elle avec mon téléphone ?</summary><p>Il faut un smartphone compatible 5G et être dans une zone couverte : nos conseillers vérifient avec vous.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. FIN : le carré se referme -->
+<section aria-labelledby="fin-title" class="fin" id="fin">
+  <div class="fin__square" id="fin-square"><h2 id="fin-title">La vie change<br>avec Orange.</h2></div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <span aria-hidden="true" class="logo logo--small"><span>orange</span></span>
+    <nav aria-label="Pied de page"><a href="#partout">Offres</a><a href="#money">Orange Money</a><a href="#forfaits">Forfaits</a><a href="#maxit">Max it</a><a href="#boutiques">Boutiques</a></nav>
+    <p class="site-footer__demo" id="demo-events"></p>
+    <p class="site-footer__legal">Concept de site, maquette non officielle — non affiliée à Orange. Orange et Max it sont des marques d'Orange.</p>
+  </div>
+</footer>
+
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+
+<script src="assets/js/cartes.js"></script>
+<script src="assets/js/pays/ci.js"></script>
+<script src="assets/js/pays/sn.js"></script>
+<script src="assets/js/pays.js"></script>
+<script src="assets/js/orange.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>Nos offres — Orange (concept)</title>
+<meta content="Concept de site multi-pays pour les filiales Orange (Côte d'Ivoire, Sénégal) : réseau, Orange Money, forfaits et l'app Max it, autour du carré Orange." name="description">
+<meta content="#000000" name="theme-color">
+<!-- Concept de site, maquette non officielle. Images : voir PROMPTS-IMAGES.md (dossier assets/img). -->
+<link href="assets/icons/favicon.svg" rel="icon" type="image/svg+xml">
+<link href="assets/icons/favicon-32.png" rel="icon" sizes="32x32" type="image/png">
+<link href="assets/icons/apple-touch-icon.png" rel="apple-touch-icon">
+<link href="assets/css/orange.css" rel="stylesheet">
+<script>
+  /* images : essaie .webp, puis .jpg, puis .png ; à défaut, la place reste un aplat (classe is-missing) */
+  window.__img = function (el) {
+    var ext = ['jpg', 'png'], i = +(el.dataset.try || 0);
+    if (i < ext.length) { el.dataset.try = i + 1; el.src = el.src.replace(/\.(webp|jpg|png)$/, '.' + ext[i]); }
+    else { el.classList.add('is-missing'); el.removeAttribute('onerror'); }
+  };
+</script>
+</head>
+<body class="page-offre">
+<a class="skip-link" href="#offre">Aller au contenu</a>
+
+<header class="site-header" id="site-header">
+  <a aria-label="Orange, accueil" class="logo" href="index.html"><span>orange</span></a>
+  <nav aria-label="Navigation principale" class="nav">
+    <a href="index.html#partout">Offres</a>
+    <a href="index.html#money">Orange Money</a>
+    <a href="index.html#forfaits">Forfaits</a>
+    <a href="index.html#maxit">Max it</a>
+    <a href="index.html#boutiques">Boutiques</a>
+    <a class="nav__cta" href="index.html#forfaits">Mon espace</a>
+    <div class="pays-sel">
+      <button aria-controls="pays-list" aria-expanded="false" class="pays-sel__btn" id="pays-btn" type="button"><span id="pays-court">CI</span><span class="sr-only"> — changer de pays</span></button>
+      <ul class="pays-sel__list" hidden id="pays-list"></ul>
+    </div>
+  </nav>
+  <button aria-controls="mobile-menu" aria-expanded="false" aria-label="Ouvrir le menu" class="menu-toggle" id="menu-toggle" type="button"><span></span><span></span><span></span></button>
+</header>
+
+<div class="mobile-menu" hidden id="mobile-menu">
+  <nav aria-label="Menu">
+    <a href="index.html#partout">Offres</a>
+    <a href="index.html#money">Orange Money</a>
+    <a href="index.html#forfaits">Forfaits</a>
+    <a href="index.html#maxit">Max it</a>
+    <a href="index.html#boutiques">Boutiques</a>
+  </nav>
+  <div class="mobile-menu__pays" id="pays-mobile"></div>
+</div>
+
+<!-- Choix du pays à la première visite (on peut changer ensuite depuis l'en-tête) -->
+<div aria-labelledby="choix-titre" aria-modal="true" class="choix" hidden id="choix" role="dialog">
+  <p class="kicker">Bienvenue</p>
+  <h2 id="choix-titre">Choisissez votre pays</h2>
+  <div class="choix__grid" id="choix-grid"></div>
+</div>
+
+<!-- PAGE D'UNE OFFRE : rendue par assets/js/offre.js depuis assets/js/offres/<pays>.js -->
+<main id="offre"></main>
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <span aria-hidden="true" class="logo logo--small"><span>orange</span></span>
+    <nav aria-label="Pied de page"><a href="index.html#partout">Offres</a><a href="index.html#money">Orange Money</a><a href="index.html#forfaits">Forfaits</a><a href="index.html#maxit">Max it</a><a href="index.html#boutiques">Boutiques</a></nav>
+    <p class="site-footer__legal">Concept de site, maquette non officielle — non affiliée à Orange. Orange et Max it sont des marques d'Orange.</p>
+  </div>
+</footer>
+
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+
+<script src="assets/js/pays/ci.js"></script>
+<script src="assets/js/pays/sn.js"></script>
+<script src="assets/js/offres/ci.js"></script>
+<script src="assets/js/offres/sn.js"></script>
+<script src="assets/js/pays.js"></script>
+<script src="assets/js/offre.js"></script>
+</body>
+</html>
